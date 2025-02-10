@@ -26,10 +26,11 @@ def process_xml():
     def extract_items(root):
         items_dict = defaultdict(int)
         for item in root.findall("ITEM"):
+            item_type = item.find("ITEMTYPE").text
             item_id = item.find("ITEMID").text
             color = item.find("COLOR").text
             min_qty = int(item.find("MINQTY").text)
-            key = (item_id, color)
+            key = (item_type, item_id, color)
             items_dict[key] += min_qty
         return items_dict
 
@@ -60,8 +61,9 @@ def process_xml():
         root = ET.Element("INVENTORY")
         for key, qty in items.items():
             item = ET.SubElement(root, "ITEM")
-            ET.SubElement(item, "ITEMID").text = key[0]
-            ET.SubElement(item, "COLOR").text = key[1]
+            ET.SubElement(item, "ITEMTYPE").text = key[0]
+            ET.SubElement(item, "ITEMID").text = key[1]
+            ET.SubElement(item, "COLOR").text = key[2]
             ET.SubElement(item, "MINQTY").text = str(qty)
         
         raw_xml = ET.tostring(root, encoding='unicode')
