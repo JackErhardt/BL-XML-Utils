@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML Processor</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        input, button { margin: 10px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Upload XML File</h2>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="xmlFile" name="file" accept=".xml" required>
+        <button type="submit">Upload</button>
+    </form>
+    <h3 id="result"></h3>
+
+    <script>
+        document.getElementById("uploadForm").onsubmit = async function(event) {
+            event.preventDefault();
+            const formData = new FormData();
+            formData.append("file", document.getElementById("xmlFile").files[0]);
+
+            const response = await fetch("/process_xml", {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+            document.getElementById("result").innerText = result.message || "Error processing XML";
+        };
+    </script>
+</body>
+</html>
