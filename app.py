@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, jsonify
 import xml.etree.ElementTree as ET
+import xml.dom.minidom
 from collections import defaultdict
 
 app = Flask(__name__)
@@ -62,7 +63,10 @@ def process_xml():
             ET.SubElement(item, "ITEMID").text = key[0]
             ET.SubElement(item, "COLOR").text = key[1]
             ET.SubElement(item, "MINQTY").text = str(qty)
-        return ET.tostring(root, encoding='unicode')
+        
+        raw_xml = ET.tostring(root, encoding='unicode')
+        parsed_xml = xml.dom.minidom.parseString(raw_xml)
+        return parsed_xml.toprettyxml(indent="  ")
 
     return jsonify({
         'message': 'Comparison complete!',
