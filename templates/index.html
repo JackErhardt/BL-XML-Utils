@@ -3,47 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XML Comparator</title>
+    <title>Bricklink XML Utility</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 20px; }
-        .container { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
-        .upload-box, .result-box { border: 2px solid #ccc; padding: 20px; width: 30%; }
-        .result-box { min-height: 200px; overflow-y: auto; }
-        input, button { margin: 10px; padding: 10px; }
-        h3 { margin-bottom: 10px; }
-        textarea { width: 100%; height: 200px; font-family: monospace; white-space: pre; }
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            margin-top: 20px; 
+        }
+        .container { 
+            display: flex; 
+            justify-content: center; 
+            gap: 20px; 
+            margin-top: 20px; 
+        }
+        .upload-box, .result-box { 
+            border: 2px solid #ccc; 
+            padding: 20px; 
+            width: 30%; 
+            border-radius: 10px;
+        }
+        .result-box { 
+            min-height: 200px; 
+            overflow-y: auto; 
+        }
+        input, button { 
+            margin: 10px; 
+            padding: 10px; 
+        }
+        h3 { 
+            margin-bottom: 10px; 
+        }
+        textarea { 
+            width: 100%; 
+            height: 200px; 
+            font-family: monospace; 
+            white-space: pre; 
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        /* Pastel color coding */
+        .xml1-box { background-color: #d0e7ff; }  /* Pastel blue */
+        .xml2-box { background-color: #ffd0d0; }  /* Pastel red */
+        .common-box { background-color: #e0d0ff; } /* Pastel purple */
     </style>
 </head>
 <body>
-    <h2>Upload Two XML Files for Comparison</h2>
+    <h2>Upload Two Bricklink XML Partslists for Comparison</h2>
     <form id="uploadForm" enctype="multipart/form-data">
         <div class="container">
             <div class="upload-box">
-                <h3>XML File 1</h3>
+                <h3>XML File 1 (e.g. New Version)</h3>
                 <input type="file" id="xmlFile1" name="file1" accept=".xml" required>
             </div>
             <div class="upload-box">
-                <h3>XML File 2</h3>
+                <h3>XML File 2 (e.g. Old Version)</h3>
                 <input type="file" id="xmlFile2" name="file2" accept=".xml" required>
             </div>
         </div>
         <button type="submit">Compare</button>
     </form>
 
-    <h2>Comparison Results</h2>
+    <h2>Comparison</h2>
     <div class="container">
-        <div class="result-box">
-            <h3>Unique to XML 1</h3>
+        <div class="result-box xml1-box">
+            <h3>Unique to XML 1 (e.g. Parts needed to upgrade)</h3>
             <textarea id="unique1" readonly></textarea>
             <button onclick="copyToClipboard('unique1')">Copy</button>
         </div>
-        <div class="result-box">
+        <div class="result-box common-box">
             <h3>Common Items</h3>
             <textarea id="common" readonly></textarea>
             <button onclick="copyToClipboard('common')">Copy</button>
         </div>
-        <div class="result-box">
-            <h3>Unique to XML 2</h3>
+        <div class="result-box xml2-box">
+            <h3>Unique to XML 2 (e.g. Unused parts in upgrade)</h3>
             <textarea id="unique2" readonly></textarea>
             <button onclick="copyToClipboard('unique2')">Copy</button>
         </div>
@@ -76,7 +111,7 @@
             const textarea = document.getElementById(elementId);
             textarea.select();
             document.execCommand("copy");
-            alert("Copied to clipboard!");
+            // alert("Copied to clipboard!");
         }
     </script>
 </body>
