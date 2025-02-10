@@ -6,13 +6,24 @@
     <title>XML Processor</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        .container { display: flex; justify-content: center; gap: 20px; }
+        .upload-box { border: 2px solid #ccc; padding: 20px; width: 40%; }
         input, button { margin: 10px; padding: 10px; }
     </style>
 </head>
 <body>
-    <h2>Upload XML File</h2>
+    <h2>Upload Two XML Files</h2>
     <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" id="xmlFile" name="file" accept=".xml" required>
+        <div class="container">
+            <div class="upload-box">
+                <h3>XML File 1</h3>
+                <input type="file" id="xmlFile1" name="file1" accept=".xml" required>
+            </div>
+            <div class="upload-box">
+                <h3>XML File 2</h3>
+                <input type="file" id="xmlFile2" name="file2" accept=".xml" required>
+            </div>
+        </div>
         <button type="submit">Upload</button>
     </form>
     <h3 id="result"></h3>
@@ -21,7 +32,8 @@
         document.getElementById("uploadForm").onsubmit = async function(event) {
             event.preventDefault();
             const formData = new FormData();
-            formData.append("file", document.getElementById("xmlFile").files[0]);
+            formData.append("file1", document.getElementById("xmlFile1").files[0]);
+            formData.append("file2", document.getElementById("xmlFile2").files[0]);
 
             const response = await fetch("/process_xml", {
                 method: "POST",
