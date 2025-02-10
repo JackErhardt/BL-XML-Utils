@@ -11,8 +11,7 @@
         .result-box { min-height: 200px; overflow-y: auto; }
         input, button { margin: 10px; padding: 10px; }
         h3 { margin-bottom: 10px; }
-        ul { list-style-type: none; padding: 0; }
-        li { padding: 5px 0; }
+        textarea { width: 100%; height: 200px; font-family: monospace; white-space: pre; }
     </style>
 </head>
 <body>
@@ -35,15 +34,18 @@
     <div class="container">
         <div class="result-box">
             <h3>Unique to XML 1</h3>
-            <ul id="unique1"></ul>
+            <textarea id="unique1" readonly></textarea>
+            <button onclick="copyToClipboard('unique1')">Copy</button>
         </div>
         <div class="result-box">
             <h3>Common Items</h3>
-            <ul id="common"></ul>
+            <textarea id="common" readonly></textarea>
+            <button onclick="copyToClipboard('common')">Copy</button>
         </div>
         <div class="result-box">
             <h3>Unique to XML 2</h3>
-            <ul id="unique2"></ul>
+            <textarea id="unique2" readonly></textarea>
+            <button onclick="copyToClipboard('unique2')">Copy</button>
         </div>
     </div>
 
@@ -65,20 +67,17 @@
                 return;
             }
 
-            function populateList(elementId, items) {
-                const list = document.getElementById(elementId);
-                list.innerHTML = ""; // Clear previous results
-                items.forEach(item => {
-                    const listItem = document.createElement("li");
-                    listItem.textContent = `ITEMID: ${item.ITEMID}, COLOR: ${item.COLOR}, MINQTY: ${item.MINQTY}`;
-                    list.appendChild(listItem);
-                });
-            }
-
-            populateList("unique1", result.unique_to_1);
-            populateList("common", result.common_items);
-            populateList("unique2", result.unique_to_2);
+            document.getElementById("unique1").value = result.unique_to_1_xml;
+            document.getElementById("common").value = result.common_items_xml;
+            document.getElementById("unique2").value = result.unique_to_2_xml;
         };
+
+        function copyToClipboard(elementId) {
+            const textarea = document.getElementById(elementId);
+            textarea.select();
+            document.execCommand("copy");
+            alert("Copied to clipboard!");
+        }
     </script>
 </body>
 </html>

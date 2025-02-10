@@ -23,16 +23,15 @@ def process_xml():
         return jsonify({'error': 'Invalid XML format'}), 400
 
     def extract_items(root):
-        items_dict = defaultdict(int)  # Dictionary to store items with counts
+        items_dict = defaultdict(int)
         for item in root.findall("ITEM"):
             item_id = item.find("ITEMID").text
             color = item.find("COLOR").text
             min_qty = int(item.find("MINQTY").text)
-            key = (item_id, color)  # Unique identifier for comparison
-            items_dict[key] += min_qty  # Accumulate MINQTY count
+            key = (item_id, color)
+            items_dict[key] += min_qty
         return items_dict
 
-    # Extract items from both XMLs
     items1 = extract_items(root1)
     items2 = extract_items(root2)
 
@@ -56,17 +55,20 @@ def process_xml():
         elif qty2 > 0:
             unique_to_2[key] = qty2
 
-    def format_items(items):
-        return [
-            {"ITEMID": key[0], "COLOR": key[1], "MINQTY": qty}
-            for key, qty in items.items()
-        ]
+    def create_xml_string(items):
+        root = ET.Element("INVENTORY")
+        for key, qty in items.items():
+            item = ET.SubElement(root, "ITEM")
+            ET.SubElement(item, "ITEMID").text = key[0]
+            ET.SubElement(item, "COLOR").text = key[1]
+            ET.SubElement(item, "MINQTY").text = str(qty)
+        return ET.tostring(root, encoding='unicode')
 
     return jsonify({
         'message': 'Comparison complete!',
-        'common_items': format_items(common_items),
-        'unique_to_1': format_items(unique_to_1),
-        'unique_to_2': format_items(unique_to_2)
+        'common_items_xml': create_xml_string(common_items),
+        'unique_to_1_xml': create_xml_string(unique_to_1),
+        'unique_to_2_xml': create_xml_string(unique_to_2)
     })
 
 if __name__ == '__main__':
