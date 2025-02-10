@@ -3,16 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XML Processor</title>
+    <title>XML Comparator</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-        .container { display: flex; justify-content: center; gap: 20px; }
-        .upload-box { border: 2px solid #ccc; padding: 20px; width: 40%; }
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 20px; }
+        .container { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
+        .upload-box, .result-box { border: 2px solid #ccc; padding: 20px; width: 30%; }
+        .result-box { min-height: 200px; overflow-y: auto; }
         input, button { margin: 10px; padding: 10px; }
+        h3 { margin-bottom: 10px; }
+        ul { list-style-type: none; padding: 0; }
+        li { padding: 5px 0; }
     </style>
 </head>
 <body>
-    <h2>Upload Two XML Files</h2>
+    <h2>Upload Two XML Files for Comparison</h2>
     <form id="uploadForm" enctype="multipart/form-data">
         <div class="container">
             <div class="upload-box">
@@ -24,9 +28,24 @@
                 <input type="file" id="xmlFile2" name="file2" accept=".xml" required>
             </div>
         </div>
-        <button type="submit">Upload</button>
+        <button type="submit">Compare</button>
     </form>
-    <h3 id="result"></h3>
+
+    <h2>Comparison Results</h2>
+    <div class="container">
+        <div class="result-box">
+            <h3>Unique to XML 1</h3>
+            <ul id="unique1"></ul>
+        </div>
+        <div class="result-box">
+            <h3>Common Items</h3>
+            <ul id="common"></ul>
+        </div>
+        <div class="result-box">
+            <h3>Unique to XML 2</h3>
+            <ul id="unique2"></ul>
+        </div>
+    </div>
 
     <script>
         document.getElementById("uploadForm").onsubmit = async function(event) {
@@ -41,7 +60,24 @@
             });
 
             const result = await response.json();
-            document.getElementById("result").innerText = result.message || "Error processing XML";
+            if (result.error) {
+                alert(result.error);
+                return;
+            }
+
+            function populateList(elementId, items) {
+                const list = document.getElementById(elementId);
+                list.innerHTML = ""; // Clear previous results
+                items.forEach(item => {
+                    const listItem = document.createElement("li");
+                    listItem.textContent = `ITEMID: ${item.ITEMID}, COLOR: ${item.COLOR}, MINQTY: ${item.MINQTY}`;
+                    list.appendChild(listItem);
+                });
+            }
+
+            populateList("unique1", result.unique_to_1);
+            populateList("common", result.common_items);
+            populateList("unique2", result.unique_to_2);
         };
     </script>
 </body>
