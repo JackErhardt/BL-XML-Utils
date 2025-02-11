@@ -41,6 +41,7 @@
             border: none;
             padding: 10px;
             border-radius: 5px;
+            resize: none;
         }
 
         /* Pastel color coding */
@@ -92,16 +93,19 @@
             <h3>Unique to XML 1 (e.g. Parts needed to upgrade)</h3>
             <textarea id="unique1" readonly></textarea>
             <button onclick="copyToClipboard('unique1')">Copy</button>
+            <button onclick="downloadXML('unique1', 'unique_xml1.xml')">Download</button>
         </div>
         <div class="result-box common-box">
             <h3>Common Items</h3>
             <textarea id="common" readonly></textarea>
             <button onclick="copyToClipboard('common')">Copy</button>
+            <button onclick="downloadXML('common', 'common_items.xml')">Download</button>
         </div>
         <div class="result-box xml2-box">
             <h3>Unique to XML 2 (e.g. Unused parts in upgrade)</h3>
             <textarea id="unique2" readonly></textarea>
             <button onclick="copyToClipboard('unique2')">Copy</button>
+            <button onclick="downloadXML('unique2', 'unique_xml2.xml')">Download</button>
         </div>
     </div>
 
@@ -172,6 +176,19 @@
         // Initialize drag-and-drop for both file upload zones
         setupDragAndDrop("drop-zone-1", "xmlFile1");
         setupDragAndDrop("drop-zone-2", "xmlFile2");
+    </script>
+
+    <script>
+    function downloadXML(textareaId, filename) {
+        const text = document.getElementById(textareaId).value;
+        const blob = new Blob([text], { type: "application/xml" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
     </script>
 </body>
 </html>
