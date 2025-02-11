@@ -47,6 +47,19 @@
         .xml1-box { background-color: #d0e7ff; }  /* Pastel blue */
         .xml2-box { background-color: #ffd0d0; }  /* Pastel red */
         .common-box { background-color: #e0d0ff; } /* Pastel purple */
+
+        /* Drag-and-Drop Styles */
+        .drop-zone {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+        .drop-zone.highlight { border-color: #007bff; }
+        .drop-zone p { margin: 0; font-size: 16px; color: #666; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -55,11 +68,19 @@
         <div class="container">
             <div class="upload-box xml1-box">
                 <h3>XML File 1 (e.g. New Version)</h3>
-                <input type="file" id="xmlFile1" name="file1" accept=".xml" required>
+                <!-- <input type="file" id="xmlFile1" name="file1" accept=".xml" required> -->
+                <div class="drop-zone" id="drop-zone-1">
+                    <p>Drag & Drop or Click to Upload</p>
+                    <input type="file" id="xmlFile1" name="file1" accept=".xml" class="hidden">
+                </div>
             </div>
             <div class="upload-box xml2-box">
                 <h3>XML File 2 (e.g. Old Version)</h3>
-                <input type="file" id="xmlFile2" name="file2" accept=".xml" required>
+                <!-- <input type="file" id="xmlFile2" name="file2" accept=".xml" required> -->
+                <div class="drop-zone" id="drop-zone-2">
+                    <p>Drag & Drop or Click to Upload</p>
+                    <input type="file" id="xmlFile2" name="file2" accept=".xml" class="hidden">
+                </div>
             </div>
         </div>
         <button type="submit">Compare</button>
@@ -113,6 +134,44 @@
             document.execCommand("copy");
             // alert("Copied to clipboard!");
         }
+    </script>
+
+    <script>
+        function setupDragAndDrop(dropZoneId, inputId) {
+            const dropZone = document.getElementById(dropZoneId);
+            const fileInput = document.getElementById(inputId);
+
+            dropZone.addEventListener("click", () => fileInput.click());
+
+            dropZone.addEventListener("dragover", (e) => {
+                e.preventDefault();
+                dropZone.classList.add("highlight");
+            });
+
+            dropZone.addEventListener("dragleave", () => {
+                dropZone.classList.remove("highlight");
+            });
+
+            dropZone.addEventListener("drop", (e) => {
+                e.preventDefault();
+                dropZone.classList.remove("highlight");
+
+                if (e.dataTransfer.files.length) {
+                    fileInput.files = e.dataTransfer.files;
+                    dropZone.querySelector("p").textContent = e.dataTransfer.files[0].name;
+                }
+            });
+
+            fileInput.addEventListener("change", () => {
+                if (fileInput.files.length) {
+                    dropZone.querySelector("p").textContent = fileInput.files[0].name;
+                }
+            });
+        }
+
+        // Initialize drag-and-drop for both file upload zones
+        setupDragAndDrop("drop-zone-1", "xmlFile1");
+        setupDragAndDrop("drop-zone-2", "xmlFile2");
     </script>
 </body>
 </html>
