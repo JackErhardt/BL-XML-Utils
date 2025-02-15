@@ -51,15 +51,14 @@ def create_xml_string(items):
         item = ET.SubElement(root, "ITEM")
         ET.SubElement(item, "ITEMTYPE").text = key[0]
         ET.SubElement(item, "ITEMID").text = key[1]
-        ET.SubElement(item, "COLOR").text = key[2]
+        if key[2] is not None :
+            ET.SubElement(item, "COLOR").text = key[2]
         ET.SubElement(item, "MINQTY").text = str(qty)
     
     raw_xml = ET.tostring(root, encoding='unicode')
     parsed_xml = xml.dom.minidom.parseString(raw_xml)
     pretty_xml = parsed_xml.toprettyxml(indent="  ")
-    print(pretty_xml)
     return pretty_xml
-
 
 @app.route('/process_xml', methods=['POST'])
 def process_xml():
@@ -79,10 +78,6 @@ def process_xml():
     items2 = extract_items(root2)
 
     common_items, unique_to_xml1, unique_to_xml2 = compare_xml(items1, items2)
-
-    print(common_items)
-    print(unique_to_xml1)
-    print(unique_to_xml2)
 
     return jsonify({
         'message': 'Comparison complete!',
