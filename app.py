@@ -10,6 +10,7 @@ def index():
     return render_template('index.html')
 
 def extract_items(root):
+    print(root)
     items_dict = defaultdict(int)
     for item in root.findall("ITEM"):
         item_type = item.find("ITEMTYPE").text
@@ -18,7 +19,7 @@ def extract_items(root):
         min_qty = int(item.find("MINQTY").text)
         key = (item_type, item_id, color)
         if key not in items_dict :
-            items_dict[key] += min_qty
+            items_dict[key] = 0
         items_dict[key] += min_qty
     return items_dict
 
@@ -30,6 +31,8 @@ def compare_xml(items1, items2):
     for key in set(items1.keys()).union(items2.keys()):
         qty1 = items1.get(key, 0)
         qty2 = items2.get(key, 0)
+
+        print(key, qty1, qty2)
 
         if qty1 > 0 and qty2 > 0:
             common_qty = min(qty1, qty2)
